@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>sample UI</title>
+    </head>
+    <body>
+        <h1>Sample UI</h1>
+        <p th:text="${submitResult}"></p>
+        <form th:action="@{/ui/sample/submit}" th:object="${sampleForm}" method="post">
+            <div>
+                ユーザーID：<input type="text" th:field="*{userId}" />
+                <span class="text-danger" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></span>
+            </div>
+            <div>
+                名前：<input type="text" th:field="*{name}" />
+                <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+            <div><input type="submit" value="送信" /></div>
+        </form>
+    </body>
+</html>
