@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Validator;
@@ -16,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class SampleFormTest {
     @Autowired
+    @Qualifier("localValidatorFactoryBean")
     Validator validator;
 
     @ParameterizedTest
@@ -30,15 +32,28 @@ public class SampleFormTest {
     }
 
     @ParameterizedTest
-    @DisplayName("userIdの異常系テスト")
-    @ValueSource(strings = {"", "あああああ", "aaa*", "abc!", "abc?", "abcdefghijklmnopqrstuvwxyz"})
+    @DisplayName("userIdの必須テスト")
+    @ValueSource(strings = "")
     @NullSource // nullがuserIdに渡されたときのテスト
+    void blankUserIdTest(String userId) {
+        var sampleForm = new SampleForm(userId, "name");
+        var exception = new BindException(sampleForm, "sampleForm");
+        validator.validate(sampleForm, exception);
+
+        assertThat(Objects.nonNull(exception.getFieldError("userId"))).isTrue();
+        assertThat(exception.getFieldError("userId").getDefaultMessage()).isEqualTo("入力必須です");
+    }
+
+    @ParameterizedTest
+    @DisplayName("userIdのフォーマットエラーテスト")
+    @ValueSource(strings = {"あああああ", "aaa*", "abc!", "abc?", "abcdefghijklmnopqrstuvwxyz"})
     void invalidUserIdTest(String userId) {
         var sampleForm = new SampleForm(userId, "name");
         var exception = new BindException(sampleForm, "sampleForm");
         validator.validate(sampleForm, exception);
-        var actual = Objects.nonNull(exception.getFieldError("userId"));
-        assertThat(actual).isTrue();
+
+        assertThat(Objects.nonNull(exception.getFieldError("userId"))).isTrue();
+        assertThat(exception.getFieldError("userId").getDefaultMessage()).isEqualTo("半角20文字以内で入力してください");
     }
 
     @ParameterizedTest
