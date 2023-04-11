@@ -5,9 +5,9 @@
         <title>sample UI</title>
     </head>
     <body>
-        <h1><a th:href="@{/ui/sample}">Sample UI</a></h1>
+        <h1><a th:href="@{/ui/form}">Sample UI</a></h1>
         <p th:text="${submitResult}"></p>
-        <form th:action="@{/ui/sample/submit}" th:object="${sampleForm}" method="post">
+        <form th:action="@{/ui/form/submit}" th:object="${sampleForm}" method="post">
             <div>
                 ユーザーID：<input type="text" th:field="*{userId}" />
                 <span class="text-danger" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></span>

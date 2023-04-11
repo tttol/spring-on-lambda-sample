@@ -15,18 +15,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/ui/sample")
+@RequestMapping("/ui/form")
 @Slf4j
-public class SampleUiController {
+public class FormController {
     @GetMapping
-    public String sample(Model model,
+    public String index(Model model,
                          @ModelAttribute("sampleForm") SampleForm sampleForm,
                          @ModelAttribute("submitResult") String submitResult) {
         var form = Optional.ofNullable(sampleForm)
                 .orElse(new SampleForm(null, null));
         model.addAttribute("sampleForm", form);
         model.addAttribute("submitResult", submitResult);
-        return "sample";
+        return "form";
     }
 
     @PostMapping("submit")
@@ -37,11 +37,11 @@ public class SampleUiController {
         if (result.hasErrors()){
             log.debug("validation error. detail={}", result.getFieldErrors());
             model.addAttribute("sampleForm", sampleForm);
-            return "sample";
+            return "form";
         }
 
         redirectAttributes.addFlashAttribute("sampleForm", sampleForm);
         redirectAttributes.addFlashAttribute("submitResult", sampleForm.toString());
-        return "redirect:/ui/sample";
+        return "redirect:/ui/form";
     }
 }
