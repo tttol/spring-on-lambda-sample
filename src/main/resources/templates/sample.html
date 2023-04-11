@@ -5,7 +5,7 @@
         <title>sample UI</title>
     </head>
     <body>
-        <h1>Sample UI</h1>
+        <h1><a th:href="@{/ui/sample}">Sample UI</a></h1>
         <p th:text="${submitResult}"></p>
         <form th:action="@{/ui/sample/submit}" th:object="${sampleForm}" method="post">
             <div>
